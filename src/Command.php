@@ -64,7 +64,7 @@ class Command
             } else {
                 $method = 'set'.ucfirst($key);
                 if (method_exists($this, $method)) {
-                    call_user_method($method, $this, $value);
+                    call_user_func(array($this,$method), $value);
                 } else {
                     throw new Exception("Unknown configuration option '$key'");
                 }
