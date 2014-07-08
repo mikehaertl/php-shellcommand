@@ -1,6 +1,15 @@
 <?php
 namespace mikehaertl\shellcommand;
 
+/**
+ * Command
+ *
+ * This class represents a shell command.
+ *
+ * @author Michael Härtl <haertl.mike@gmail.com>
+ * @version 1.0.2-dev
+ * @license http://www.opensource.org/licenses/MIT
+ */
 class Command
 {
     /**
@@ -29,13 +38,39 @@ class Command
      */
     public $procOptions;
 
+    /**
+     * @var string the command to execute
+     */
     protected $_command;
+
+    /**
+     * @var array the list of command arguments
+     */
     protected $_args = array();
+
+    /**
+     * @var string the full command string to execute
+     */
     protected $_execCommand;
 
+    /**
+     * @var string the stdout output
+     */
     protected $_stdOut = '';
+
+    /**
+     * @var string the stderr output
+     */
     protected $_stdErr = '';
+
+    /**
+     * @var int the exit code
+     */
     protected $_exitCode;
+
+    /**
+     * @var string the error message
+     */
     protected $_error = '';
 
     /**

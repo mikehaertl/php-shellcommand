@@ -66,7 +66,8 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $command->addArg('--a', array("v'1",'v2','v3'));
         $command->addArg('-b=','v');
         $command->addArg('-b=', array('v4','v5','v6'));
-        $this->assertEquals("--arg1=x --a --a 'v' --a 'v'\''1' 'v2' 'v3' -b='v' -b='v4' 'v5' 'v6'", $command->getArgs());
+        $command->addArg('-c', '');
+        $this->assertEquals("--arg1=x --a --a 'v' --a 'v'\''1' 'v2' 'v3' -b='v' -b='v4' 'v5' 'v6' -c ''", $command->getArgs());
     }
     public function testCanResetArguments()
     {
