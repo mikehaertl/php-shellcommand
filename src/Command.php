@@ -235,6 +235,6 @@ class Command
      */
     public function __toString()
     {
-        return $this->getExecCommand();
+        return (string)$this->getExecCommand();
     }
 }
