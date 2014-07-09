@@ -64,10 +64,11 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $command->addArg('--a');
         $command->addArg('--a', 'v');
         $command->addArg('--a', array("v'1",'v2','v3'));
-        $command->addArg('-b=','v');
+        $command->addArg('-b=','v', false);
         $command->addArg('-b=', array('v4','v5','v6'));
         $command->addArg('-c', '');
-        $this->assertEquals("--arg1=x '--a' --a 'v' --a 'v'\''1' 'v2' 'v3' -b='v' -b='v4' 'v5' 'v6' -c ''", $command->getArgs());
+        $command->addArg('some name', null, true);
+        $this->assertEquals("--arg1=x --a --a 'v' --a 'v'\''1' 'v2' 'v3' -b=v -b='v4' 'v5' 'v6' -c '' 'some name'", $command->getArgs());
     }
     public function testCanResetArguments()
     {
@@ -84,16 +85,17 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $command->addArg('--a');
         $command->addArg('--a', 'v');
         $command->addArg('--a', array("v1",'v2','v3'));
-        $command->addArg('-b=','v');
+        $command->addArg('-b=','v', true);
         $command->addArg('-b=', array('v4','v5','v6'));
-        $this->assertEquals("--a --a v --a v1 v2 v3 -b=v -b=v4 v5 v6", $command->getArgs());
+        $command->addArg('some name', null, true);
+        $this->assertEquals("--a --a v --a v1 v2 v3 -b='v' -b=v4 v5 v6 'some name'", $command->getArgs());
     }
     public function testCanRunCommandWithArguments()
     {
         $command = new Command('ls');
         $command->addArg('-l');
         $command->addArg('-n');
-        $this->assertEquals("ls '-l' '-n'", $command->getExecCommand());
+        $this->assertEquals("ls -l -n", $command->getExecCommand());
         $this->assertTrue($command->execute());
     }
 
@@ -137,7 +139,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $command = new Command('ls');
         $command->addArg('-l');
         $command->addArg('-n');
-        $this->assertEquals("ls '-l' '-n'", (string)$command);
+        $this->assertEquals("ls -l -n", (string)$command);
     }
 
     // Proc

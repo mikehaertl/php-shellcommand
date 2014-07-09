@@ -165,28 +165,31 @@ class Command
     }
 
     /**
-     * @param string $key the argument key to add e.g. '--feature' or '--name='. If the key does not end with
-     * and '=', the $value will be separated by a space, if any
+     * @param string $key the argument key to add e.g. `--feature` or `--name=`. If the key does not end with
+     * and `=`, the $value will be separated by a space, if any. Keys are not escaped unless $value is null
+     * and $escape is `true`.
      * @param string|array|null $value the optional argument value which will get escaped if $escapeArgs is true.
-     * An array can be passed to add more than one value for a key, e.g. addArg('--exclude', array('val1','val2'))
-     * which will create the option "--exclude 'val1' 'val2'".
+     * An array can be passed to add more than one value for a key, e.g. `addArg('--exclude', array('val1','val2'))`
+     * which will create the option `--exclude 'val1' 'val2'`.
+     * @param bool|null $escape if set, this overrides the $escapeArgs setting and enforces escaping/no escaping
      * @return Command for method chaining
      */
-    public function addArg($key, $value=null)
+    public function addArg($key, $value = null, $escape = null)
     {
+        $doEscape = $escape!==null ? $escape : $this->escapeArgs;
         if ($value===null) {
-            // Escape single args, e.g. for filename args on Windows ("C:\Program Files\..")
-            $this->_args[] = $this->escapeArgs ? escapeshellarg($key) : $key;
+            // Only escape single arguments if explicitely requested
+            $this->_args[] = $escape ? escapeshellarg($key) : $key;
         } else {
             $separator = substr($key, -1)==='=' ? '' : ' ';
             if (is_array($value)) {
                 $params = array();
                 foreach ($value as $v) {
-                    $params[] = $this->escapeArgs ? escapeshellarg($v) : $v;
+                    $params[] = $doEscape ? escapeshellarg($v) : $v;
                 }
                 $this->_args[] = $key.$separator.implode(' ',$params);
             } else {
-                $this->_args[] = $key.$separator.($this->escapeArgs ? escapeshellarg($value) : $value);
+                $this->_args[] = $key.$separator.($doEscape ? escapeshellarg($value) : $value);
             }
         }
 

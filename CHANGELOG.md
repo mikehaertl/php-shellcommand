@@ -2,7 +2,7 @@
 
 ## 1.0.2
 
- * Also escape single args, e.g. for filepaths on Windows
+ * Add `$escape` parameter to `addArg()` to override escaping settings per call
 
 ## 1.0.1
 
