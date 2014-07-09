@@ -67,7 +67,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $command->addArg('-b=','v');
         $command->addArg('-b=', array('v4','v5','v6'));
         $command->addArg('-c', '');
-        $this->assertEquals("--arg1=x --a --a 'v' --a 'v'\''1' 'v2' 'v3' -b='v' -b='v4' 'v5' 'v6' -c ''", $command->getArgs());
+        $this->assertEquals("--arg1=x '--a' --a 'v' --a 'v'\''1' 'v2' 'v3' -b='v' -b='v4' 'v5' 'v6' -c ''", $command->getArgs());
     }
     public function testCanResetArguments()
     {
@@ -93,7 +93,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $command = new Command('ls');
         $command->addArg('-l');
         $command->addArg('-n');
-        $this->assertEquals('ls -l -n', $command->getExecCommand());
+        $this->assertEquals("ls '-l' '-n'", $command->getExecCommand());
         $this->assertTrue($command->execute());
     }
 
@@ -137,7 +137,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $command = new Command('ls');
         $command->addArg('-l');
         $command->addArg('-n');
-        $this->assertEquals('ls -l -n', (string)$command);
+        $this->assertEquals("ls '-l' '-n'", (string)$command);
     }
 
     // Proc

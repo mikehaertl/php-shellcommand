@@ -74,8 +74,8 @@ $command->addArg('--keys', array('key1','key2')
     * `$options`: either a command string or an options array (see `setOptions()`)
  * `setOptions($options)`: Set command options
     * `$options`: array of name => value options that should be applied to the object.
-       You can also pass options that use a setter, e.g. you can pass a `fileName` option which
-       will be passed to setFileName().
+       You can also pass options that use a setter, e.g. you can pass a `command` option which
+       will be passed to setCommand().
  * `setCommand($command)`: Set command
     * `$command`: The command or full command string to execute, like `gzip` or `gzip -d`.
        You can still call `addArg()` to add more arguments to the command. If `$escapeCommand` was

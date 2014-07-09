@@ -7,7 +7,7 @@ namespace mikehaertl\shellcommand;
  * This class represents a shell command.
  *
  * @author Michael Härtl <haertl.mike@gmail.com>
- * @version 1.0.2-dev
+ * @version 1.0.2
  * @license http://www.opensource.org/licenses/MIT
  */
 class Command
@@ -175,7 +175,8 @@ class Command
     public function addArg($key, $value=null)
     {
         if ($value===null) {
-            $this->_args[] = $key;
+            // Escape single args, e.g. for filename args on Windows ("C:\Program Files\..")
+            $this->_args[] = $this->escapeArgs ? escapeshellarg($key) : $key;
         } else {
             $separator = substr($key, -1)==='=' ? '' : ' ';
             if (is_array($value)) {
