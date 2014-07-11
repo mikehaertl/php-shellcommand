@@ -38,7 +38,9 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         ));
         $this->assertEquals('echo -n $TESTVAR', $command->getExecCommand());
         $this->assertFalse($command->escapeArgs);
+        $this->assertFalse($command->getExecuted());
         $this->assertTrue($command->execute());
+        $this->assertTrue($command->getExecuted());
         $this->assertEquals('test', $command->getOutput());
     }
     public function testCanPassOptionsToConstructor()
@@ -51,7 +53,9 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         ));
         $this->assertEquals('echo -n $TESTVAR', $command->getExecCommand());
         $this->assertFalse($command->escapeArgs);
+        $this->assertFalse($command->getExecuted());
         $this->assertTrue($command->execute());
+        $this->assertTrue($command->getExecuted());
         $this->assertEquals('test', $command->getOutput());
     }
 
@@ -96,7 +100,9 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $command->addArg('-l');
         $command->addArg('-n');
         $this->assertEquals("ls -l -n", $command->getExecCommand());
+        $this->assertFalse($command->getExecuted());
         $this->assertTrue($command->execute());
+        $this->assertTrue($command->getExecuted());
     }
 
     // Output / error / exit code
@@ -105,7 +111,9 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $dir = __DIR__;
         $command = new Command("/bin/ls $dir");
 
+        $this->assertFalse($command->getExecuted());
         $this->assertTrue($command->execute());
+        $this->assertTrue($command->getExecuted());
         $this->assertEquals("CommandTest.php\n", $command->getOutput());
         $this->assertEmpty($command->getError());
         $this->assertEmpty($command->getStdErr());
@@ -119,7 +127,9 @@ class CommandTest extends \PHPUnit_Framework_TestCase
     public function testCanNotRunNotExistantCommand()
     {
         $command = new Command('/does/not/exist');
+        $this->assertFalse($command->getExecuted());
         $this->assertFalse($command->execute());
+        $this->assertFalse($command->getExecuted());
         $this->assertNotEmpty($command->getError());
         $this->assertNotEmpty($command->getStdErr());
         $this->assertEmpty($command->getOutput());
@@ -128,7 +138,9 @@ class CommandTest extends \PHPUnit_Framework_TestCase
     public function testCanNotRunInvalidCommand()
     {
         $command = new Command('ls --this-does-not-exist');
+        $this->assertFalse($command->getExecuted());
         $this->assertFalse($command->execute());
+        $this->assertFalse($command->getExecuted());
         $this->assertNotEmpty($command->getError());
         $this->assertNotEmpty($command->getStdErr());
         $this->assertEmpty($command->getOutput());
@@ -155,7 +167,9 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $tmpDir = sys_get_temp_dir();
         $command = new Command('pwd');
         $command->procCwd = $tmpDir;
+        $this->assertFalse($command->getExecuted());
         $this->assertTrue($command->execute());
+        $this->assertTrue($command->getExecuted());
         $this->assertEquals($tmpDir."\n", $command->getOutput());
     }
 }

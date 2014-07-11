@@ -102,4 +102,5 @@ $command->addArg('--keys', array('key1','key2')
  * `getError()`: The error message, either stderr or internal message. Empty if none.
  * `getStdErr()`: The stderr output. Empty if none.
  * `getExitCode()`: The exit code.
+ * `getExecuted()`: Whether the command was successfully executed.
  * `execute()`: Executes the command and returns `true` on success, `false` otherwhise.

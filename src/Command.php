@@ -7,7 +7,7 @@ namespace mikehaertl\shellcommand;
  * This class represents a shell command.
  *
  * @author Michael Härtl <haertl.mike@gmail.com>
- * @version 1.0.3-dev
+ * @version 1.0.3
  * @license http://www.opensource.org/licenses/MIT
  */
 class Command
@@ -72,6 +72,11 @@ class Command
      * @var string the error message
      */
     protected $_error = '';
+
+    /**
+     * @var bool whether the command was successfully executed
+     */
+    protected $_executed = false;
 
     /**
      * @param string|array $options either a command string or an options array (see setOptions())
@@ -229,6 +234,14 @@ class Command
     }
 
     /**
+     * @return string whether the command was successfully executed
+     */
+    public function getExecuted()
+    {
+        return $this->_executed;
+    }
+
+    /**
      * Execute the command
      *
      * @return bool whether execution was successful. If false, error details can be obtained through
@@ -265,6 +278,8 @@ class Command
             $this->_error = "Could not run command $command";
             return false;
         }
+
+        $this->_executed = true;
 
         return true;
     }
