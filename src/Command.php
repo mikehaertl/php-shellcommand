@@ -106,7 +106,7 @@ class Command
                 if (method_exists($this, $method)) {
                     call_user_func(array($this,$method), $value);
                 } else {
-                    throw new Exception("Unknown configuration option '$key'");
+                    throw new \Exception("Unknown configuration option '$key'");
                 }
             }
         }
