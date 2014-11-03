@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0.5
+
+ * TBD
+
 ## 1.0.4
 
  * Add `$useExec` option to fix Windows issues (#3)
