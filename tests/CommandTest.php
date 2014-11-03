@@ -114,15 +114,16 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($command->getExecuted());
         $this->assertTrue($command->execute());
         $this->assertTrue($command->getExecuted());
-        $this->assertEquals("CommandTest.php\n", $command->getOutput());
+        $this->assertEquals("CommandTest.php", $command->getOutput());
         $this->assertEmpty($command->getError());
         $this->assertEmpty($command->getStdErr());
         $this->assertEquals(0, $command->getExitCode());
     }
     public function testCanNotRunEmptyCommand()
     {
-        $command = new Command('/does/not/exist');
+        $command = new Command('');
         $this->assertFalse($command->execute());
+        $this->assertEquals('Could not locate any executable command', $command->getError());
     }
     public function testCanNotRunNotExistantCommand()
     {
@@ -154,13 +155,53 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("ls -l -n", (string)$command);
     }
 
+    // Exec
+    public function testCanRunValidCommandWithExec()
+    {
+        $dir = __DIR__;
+        $command = new Command("/bin/ls $dir");
+        $command->useExec = true;
+
+        $this->assertFalse($command->getExecuted());
+        $this->assertTrue($command->execute());
+        $this->assertTrue($command->getExecuted());
+        $this->assertEquals("CommandTest.php", $command->getOutput());
+        $this->assertEmpty($command->getError());
+        $this->assertEmpty($command->getStdErr());
+        $this->assertEquals(0, $command->getExitCode());
+    }
+    public function testCanNotRunNotExistantCommandWithExec()
+    {
+        $command = new Command('/does/not/exist');
+        $command->useExec = true;
+        $this->assertFalse($command->getExecuted());
+        $this->assertFalse($command->execute());
+        $this->assertFalse($command->getExecuted());
+        $this->assertNotEmpty($command->getError());
+        $this->assertEmpty($command->getStdErr());
+        $this->assertEmpty($command->getOutput());
+        $this->assertEquals(127, $command->getExitCode());
+    }
+    public function testCanNotRunInvalidCommandWithExec()
+    {
+        $command = new Command('ls --this-does-not-exist');
+        $command->useExec = true;
+        $this->assertFalse($command->getExecuted());
+        $this->assertFalse($command->execute());
+        $this->assertFalse($command->getExecuted());
+        $this->assertNotEmpty($command->getError());
+        $this->assertEmpty($command->getStdErr());
+        $this->assertEmpty($command->getOutput());
+        $this->assertEquals(2, $command->getExitCode());
+    }
+
     // Proc
     public function testCanProvideProcEnvVars()
     {
         $command = new Command('echo $TESTVAR');
         $command->procEnv = array('TESTVAR' => 'testvalue');
         $this->assertTrue($command->execute());
-        $this->assertEquals("testvalue\n", $command->getOutput());
+        $this->assertEquals("testvalue", $command->getOutput());
     }
     public function testCanProvideProcDir()
     {
@@ -170,6 +211,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($command->getExecuted());
         $this->assertTrue($command->execute());
         $this->assertTrue($command->getExecuted());
-        $this->assertEquals($tmpDir."\n", $command->getOutput());
+        $this->assertEquals($tmpDir, $command->getOutput());
     }
+
 }

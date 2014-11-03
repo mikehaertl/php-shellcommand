@@ -24,6 +24,15 @@ class Command
     public $escapeCommand = false;
 
     /**
+     * @var bool whether to use `exec()` instead of `proc_open()`. This can be used on Windows system
+     * to workaround some quirks there. Note, that any errors from your command will be output directly
+     * to the PHP output stream. `getStdErr()` will also not work anymore and thus you also won't get
+     * the error output from `getError()` in this case. You also can't pass any environment
+     * variables to the command if this is enabled. Default is false.
+     */
+    public $useExec = false;
+
+    /**
      * @var string|null the initial working dir for proc_open(). Default is null for current PHP working dir.
      */
     public $procCwd;
@@ -255,28 +264,37 @@ class Command
             return false;
         }
 
-        $descriptors = array(
-            1   => array('pipe','w'),
-            2   => array('pipe','w'),
-        );
-        $process = proc_open($command, $descriptors, $pipes, $this->procCwd, $this->procEnv, $this->procOptions);
-
-        if (is_resource($process)) {
-
-            $this->_stdOut = stream_get_contents($pipes[1]);
-            $this->_stdErr = stream_get_contents($pipes[2]);
-            fclose($pipes[1]);
-            fclose($pipes[2]);
-
-            $this->_exitCode = proc_close($process);
-
+        if ($this->useExec) {
+            exec($command, $output, $this->_exitCode);
+            $this->_stdOut = trim(implode("\n", $output));
             if ($this->_exitCode!==0) {
-                $this->_error = $this->_stdErr ? $this->_stdErr : "Failed without error message: $command";
+                $this->_error = 'Command failed';
                 return false;
             }
         } else {
-            $this->_error = "Could not run command $command";
-            return false;
+            $descriptors = array(
+                1   => array('pipe','w'),
+                2   => array('pipe','w'),
+            );
+            $process = proc_open($command, $descriptors, $pipes, $this->procCwd, $this->procEnv, $this->procOptions);
+
+            if (is_resource($process)) {
+
+                $this->_stdOut = trim(stream_get_contents($pipes[1]));
+                $this->_stdErr = trim(stream_get_contents($pipes[2]));
+                fclose($pipes[1]);
+                fclose($pipes[2]);
+
+                $this->_exitCode = proc_close($process);
+
+                if ($this->_exitCode!==0) {
+                    $this->_error = $this->_stdErr ? $this->_stdErr : "Failed without error message: $command";
+                    return false;
+                }
+            } else {
+                $this->_error = "Could not run command $command";
+                return false;
+            }
         }
 
         $this->_executed = true;
