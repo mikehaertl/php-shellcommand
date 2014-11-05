@@ -103,6 +103,7 @@ class Command
      * @param array $options array of name => value options that should be applied to the object
      * You can also pass options that use a setter, e.g. you can pass a 'fileName' option which
      * will be passed to setFileName().
+     * @throws \Exception
      * @return Command for method chaining
      */
     public function setOptions($options)
@@ -265,10 +266,10 @@ class Command
         }
 
         if ($this->useExec) {
-            exec($command, $output, $this->_exitCode);
-            $this->_stdOut = trim(implode("\n", $output));
+            exec($command . ' 2>&1', $output, $this->_exitCode);
+            $this->_stdErr = trim(implode(PHP_EOL, $output));
             if ($this->_exitCode!==0) {
-                $this->_error = 'Command failed';
+                $this->_error = $this->_stdErr ? $this->parseStdErr($this->_stdErr) : "Failed without error message: $command";
                 return false;
             }
         } else {
@@ -288,7 +289,7 @@ class Command
                 $this->_exitCode = proc_close($process);
 
                 if ($this->_exitCode!==0) {
-                    $this->_error = $this->_stdErr ? $this->_stdErr : "Failed without error message: $command";
+                    $this->_error = $this->_stdErr ? $this->parseStdErr($this->_stdErr) : "Failed without error message: $command";
                     return false;
                 }
             } else {
@@ -300,6 +301,17 @@ class Command
         $this->_executed = true;
 
         return true;
+    }
+
+    protected function parseStdErr($errMsg)
+    {
+        $pattern = '/(?:Error\:)(?P<error>.*)/';
+        $matches = array();
+        if (preg_match($pattern, $errMsg, $matches) && isset($matches['error'])) {
+            return trim($matches['error']);
+        } else {
+            return $errMsg;
+        }
     }
 
     /**
