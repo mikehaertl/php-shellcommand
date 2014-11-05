@@ -178,8 +178,8 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($command->execute());
         $this->assertFalse($command->getExecuted());
         $this->assertNotEmpty($command->getError());
-        $this->assertEmpty($command->getStdErr());
-        $this->assertEmpty($command->getOutput());
+        $this->assertNotEmpty($command->getStdErr());
+        $this->assertNotEmpty($command->getOutput());
         $this->assertEquals(127, $command->getExitCode());
     }
     public function testCanNotRunInvalidCommandWithExec()
@@ -190,8 +190,8 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($command->execute());
         $this->assertFalse($command->getExecuted());
         $this->assertNotEmpty($command->getError());
-        $this->assertEmpty($command->getStdErr());
-        $this->assertEmpty($command->getOutput());
+        $this->assertNotEmpty($command->getStdErr());
+        $this->assertNotEmpty($command->getOutput());
         $this->assertEquals(2, $command->getExitCode());
     }
 

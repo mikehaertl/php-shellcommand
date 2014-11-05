@@ -33,6 +33,13 @@ class Command
     public $useExec = false;
 
     /**
+     * @var bool whether to capture stderr (2>&1) when `useExec` is true. This will try to redirect the
+     * stderr to stdout and provide the complete output of both in `getStdErr()` and `getError()`.
+     * Default is `true`.
+     */
+    public $captureStdErr = true;
+
+    /**
      * @var string|null the initial working dir for proc_open(). Default is null for current PHP working dir.
      */
     public $procCwd;
@@ -265,10 +272,12 @@ class Command
         }
 
         if ($this->useExec) {
-            exec($command, $output, $this->_exitCode);
+            $execCommand = $this->captureStdErr ? "$command 2>&1" : $command;
+            exec($execCommand, $output, $this->_exitCode);
             $this->_stdOut = trim(implode("\n", $output));
             if ($this->_exitCode!==0) {
-                $this->_error = 'Command failed';
+                $this->_stdErr = $this->_stdOut;
+                $this->_error = empty($this->_stdErr) ? 'Command failed' : $this->_stdErr;
                 return false;
             }
         } else {
