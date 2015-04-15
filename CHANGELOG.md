@@ -2,7 +2,7 @@
 
 ## 1.0.5
 
- * TBD
+ * Improve `proc_open()` pipe configuration
 
 ## 1.0.4
 
