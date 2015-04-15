@@ -283,7 +283,7 @@ class Command
         } else {
             $descriptors = array(
                 1   => array('pipe','w'),
-                2   => array('pipe','w'),
+                2   => array('pipe','a'),
             );
             $process = proc_open($command, $descriptors, $pipes, $this->procCwd, $this->procEnv, $this->procOptions);
 
