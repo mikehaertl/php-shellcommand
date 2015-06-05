@@ -78,6 +78,10 @@ $command->addArg('--keys', array('key1','key2')
  * `$procEnv`: An array with environment variables to pass to `proc_open()`. Default is `null` for none.
  * `$procOptions`: An array of `other_options` for `proc_open()`. Default is `null` for none.
 
+You can configure all these properties via an array that you pass in the constructor. You can also
+pass `command`, `execCommand` and `args` as options. This will call the respective setter (`setCommand()`,
+`setExecCommand()`, etc.).
+
 ### Methods
 
  * `__construct($options = null)`
