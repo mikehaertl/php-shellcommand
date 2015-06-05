@@ -68,6 +68,11 @@ $command->addArg('--keys', array('key1','key2')
  * `$escapeArgs`: Whether to escape any argument passed through `addArg()`. Default is `true`.
  * `$escapeCommand`: Whether to escape the command passed to `setCommand()` or the constructor.
     This is only useful if `$escapeArgs` is `false`. Default is `false`.
+ * `$useExec`: Whether to use `exec()` instead of `proc_open()`. This is a workaround for OS which
+   have problems with `proc_open()`. Default is `false`.
+ * `$captureStdErr`: Whether to capture stderr when `useExec` is set. This will try to redirect
+   the otherwhise unavailable `stderr` to `stdout`, so that both have the same content on error.
+   Default is `true`.
  * `$procCwd`: The initial working dir passed to `proc_open()`. Default is `null` for current
     PHP working dir.
  * `$procEnv`: An array with environment variables to pass to `proc_open()`. Default is `null` for none.
