@@ -132,7 +132,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($command->execute());
         $this->assertFalse($command->getExecuted());
         $this->assertNotEmpty($command->getError());
-        $this->assertEmpty($command->getStdErr());
+        $this->assertNotEmpty($command->getStdErr());
         $this->assertEmpty($command->getOutput());
         $this->assertEquals(127, $command->getExitCode());
     }
@@ -143,7 +143,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($command->execute());
         $this->assertFalse($command->getExecuted());
         $this->assertNotEmpty($command->getError());
-        $this->assertEmpty($command->getStdErr());
+        $this->assertNotEmpty($command->getStdErr());
         $this->assertEmpty($command->getOutput());
         $this->assertEquals(2, $command->getExitCode());
     }
