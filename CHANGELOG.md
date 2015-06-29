@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0.7
+
+ * WIP
+
 ## 1.0.6
 
  * Undid `proc_open()` changes as it broke error capturing
