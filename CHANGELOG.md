@@ -2,7 +2,7 @@
 
 ## 1.0.6
 
- * WIP
+ * Undid `proc_open()` changes as it broke error capturing
 
 ## 1.0.5
 
