@@ -283,7 +283,7 @@ class Command
         } else {
             $descriptors = array(
                 1   => array('pipe','w'),
-                2   => array('pipe','w'),
+                2   => array('pipe', $this->getIsWindows() ? 'a' : 'w'),
             );
             $process = proc_open($command, $descriptors, $pipes, $this->procCwd, $this->procEnv, $this->procOptions);
 
@@ -309,6 +309,14 @@ class Command
         $this->_executed = true;
 
         return true;
+    }
+
+    /**
+     * @return bool whether we are on a Windows OS
+     */
+    public function getIsWindows()
+    {
+        return strncasecmp(PHP_OS, 'WIN', 3)===0;
     }
 
     /**
