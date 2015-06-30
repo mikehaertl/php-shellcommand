@@ -108,7 +108,7 @@ pass `command`, `execCommand` and `args` as options. This will call the respecti
        which will create the option "--exclude 'val1' 'val2'".
     * `$escape`: If set, this overrides the `$escapeArgs` setting and enforces escaping/no escaping
  * `getOutput()`: The command output as string. Empty if none.
- * `getError()`: The error message, either stderr or internal message. Empty if none.
+ * `getError()`: The error message, either stderr or internal message. Empty if no error.
  * `getStdErr()`: The stderr output. Empty if none.
  * `getExitCode()`: The exit code.
  * `getExecuted()`: Whether the command was successfully executed.

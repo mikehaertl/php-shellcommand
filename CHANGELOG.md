@@ -2,7 +2,7 @@
 
 ## 1.0.7
 
- * WIP
+ * Issue #6: Solve `proc_open()` pipe configuration for both, Windows / Linux
 
 ## 1.0.6
 
