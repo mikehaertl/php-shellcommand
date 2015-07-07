@@ -7,7 +7,7 @@ namespace mikehaertl\shellcommand;
  * This class represents a shell command.
  *
  * @author Michael Härtl <haertl.mike@gmail.com>
- * @version 1.1.0
+ * @version 1.1.1-dev
  * @license http://www.opensource.org/licenses/MIT
  */
 class Command

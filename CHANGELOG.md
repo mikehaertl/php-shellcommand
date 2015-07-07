@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.1.1
+
+ WIP
+
 ## 1.1.0
 
  * Issue #7: UTF-8 encoded arguments where truncated
