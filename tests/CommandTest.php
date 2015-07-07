@@ -6,7 +6,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         // Default in some installations
-        setlocale('LC_CTYPE', 'C');
+        setlocale(LC_CTYPE, 'C');
     }
 
     // Create command from command string
