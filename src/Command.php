@@ -7,19 +7,19 @@ namespace mikehaertl\shellcommand;
  * This class represents a shell command.
  *
  * @author Michael Härtl <haertl.mike@gmail.com>
- * @version 1.0.7
+ * @version 1.1.0-dev
  * @license http://www.opensource.org/licenses/MIT
  */
 class Command
 {
     /**
-     * @var bool whether to escape any argument passed through addArg(). Default is true.
+     * @var bool whether to escape any argument passed through `addArg()`. Default is `true`.
      */
     public $escapeArgs = true;
 
     /**
-     * @var bool whether to escape the command passed to setCommand() or the constructor.
-     * This is only useful if $escapeArgs is false. Default is false.
+     * @var bool whether to escape the command passed to `setCommand()` or the constructor.
+     * This is only useful if `$escapeArgs` is `false`. Default is `false`.
      */
     public $escapeCommand = false;
 
@@ -28,7 +28,7 @@ class Command
      * to workaround some quirks there. Note, that any errors from your command will be output directly
      * to the PHP output stream. `getStdErr()` will also not work anymore and thus you also won't get
      * the error output from `getError()` in this case. You also can't pass any environment
-     * variables to the command if this is enabled. Default is false.
+     * variables to the command if this is enabled. Default is `false`.
      */
     public $useExec = false;
 
@@ -40,19 +40,24 @@ class Command
     public $captureStdErr = true;
 
     /**
-     * @var string|null the initial working dir for proc_open(). Default is null for current PHP working dir.
+     * @var string|null the initial working dir for `proc_open()`. Default is `null` for current PHP working dir.
      */
     public $procCwd;
 
     /**
-     * @var array|null an array with environment variables to pass to proc_open(). Default is null for none.
+     * @var array|null an array with environment variables to pass to `proc_open()`. Default is `null` for none.
      */
     public $procEnv;
 
     /**
-     * @var array|null an array of other_options for proc_open(). Default is null for none.
+     * @var array|null an array of other_options for `proc_open()`. Default is `null` for none.
      */
     public $procOptions;
+
+    /**
+     * @var null|string the locale to temporarily set before calling `escapeshellargs()`. Default is `null` for none.
+     */
+    public $locale;
 
     /**
      * @var string the command to execute
@@ -108,9 +113,9 @@ class Command
 
     /**
      * @param array $options array of name => value options that should be applied to the object
-     * You can also pass options that use a setter, e.g. you can pass a 'fileName' option which
-     * will be passed to setFileName().
-     * @return Command for method chaining
+     * You can also pass options that use a setter, e.g. you can pass a `fileName` option which
+     * will be passed to `setFileName()`.
+     * @return static for method chaining
      */
     public function setOptions($options)
     {
@@ -133,7 +138,7 @@ class Command
      * @param string $command the command or full command string to execute, like 'gzip' or 'gzip -d'.
      * You can still call addArg() to add more arguments to the command. If $escapeCommand was set to true,
      * the command gets escaped through escapeshellcmd().
-     * @return Command for method chaining
+     * @return static for method chaining
      */
     public function setCommand($command)
     {
@@ -169,7 +174,7 @@ class Command
 
     /**
      * @param string $args the command arguments as string. Note that these will not get escaped!
-     * @return Command for method chaining
+     * @return static for method chaining
      */
     public function setArgs($args)
     {
@@ -193,11 +198,17 @@ class Command
      * An array can be passed to add more than one value for a key, e.g. `addArg('--exclude', array('val1','val2'))`
      * which will create the option `--exclude 'val1' 'val2'`.
      * @param bool|null $escape if set, this overrides the $escapeArgs setting and enforces escaping/no escaping
-     * @return Command for method chaining
+     * @return static for method chaining
      */
     public function addArg($key, $value = null, $escape = null)
     {
         $doEscape = $escape!==null ? $escape : $this->escapeArgs;
+        $useLocale = $doEscape && $this->locale!==null;
+
+        if ($useLocale) {
+            $locale = setlocale(LC_CTYPE, 0);   // Returns current locale setting
+            setlocale(LC_CTYPE, $this->locale);
+        }
         if ($value===null) {
             // Only escape single arguments if explicitely requested
             $this->_args[] = $escape ? escapeshellarg($key) : $key;
@@ -212,6 +223,9 @@ class Command
             } else {
                 $this->_args[] = $key.$separator.($doEscape ? escapeshellarg($value) : $value);
             }
+        }
+        if ($useLocale) {
+            setlocale(LC_CTYPE, $locale);
         }
 
         return $this;

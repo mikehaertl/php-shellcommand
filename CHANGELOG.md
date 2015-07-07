@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.1.0
+
+ * Issue #7: UTF-8 encoded arguments where truncated
+
 ## 1.0.7
 
  * Issue #6: Solve `proc_open()` pipe configuration for both, Windows / Linux

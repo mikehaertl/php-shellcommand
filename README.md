@@ -77,6 +77,8 @@ $command->addArg('--keys', array('key1','key2')
     PHP working dir.
  * `$procEnv`: An array with environment variables to pass to `proc_open()`. Default is `null` for none.
  * `$procOptions`: An array of `other_options` for `proc_open()`. Default is `null` for none.
+ * `$locale`: The locale to (temporarily) set with `setlocale()` before running the command.
+   This can be set to e.g. `en_US.UTF-8` if you have issues with UTF-8 encoded arguments.
 
 You can configure all these properties via an array that you pass in the constructor. You can also
 pass `command`, `execCommand` and `args` as options. This will call the respective setter (`setCommand()`,

@@ -3,6 +3,12 @@ use mikehaertl\shellcommand\Command;
 
 class CommandTest extends \PHPUnit_Framework_TestCase
 {
+    public function setUp()
+    {
+        // Default in some installations
+        setlocale('LC_CTYPE', 'C');
+    }
+
     // Create command from command string
     public function testCanPassCommandStringToConstructor()
     {
@@ -63,16 +69,20 @@ class CommandTest extends \PHPUnit_Framework_TestCase
     // Arguments
     public function testCanAddArguments()
     {
-        $command = new Command();
+        $command = new Command(array(
+            'locale' => 'en_US.UTF-8',
+        ));
+        $command->setCommand('test');
         $command->setArgs('--arg1=x');
         $command->addArg('--a');
-        $command->addArg('--a', 'v');
+        $command->addArg('--a', '中文字äüp');
         $command->addArg('--a', array("v'1",'v2','v3'));
         $command->addArg('-b=','v', false);
         $command->addArg('-b=', array('v4','v5','v6'));
         $command->addArg('-c', '');
         $command->addArg('some name', null, true);
-        $this->assertEquals("--arg1=x --a --a 'v' --a 'v'\''1' 'v2' 'v3' -b=v -b='v4' 'v5' 'v6' -c '' 'some name'", $command->getArgs());
+        $this->assertEquals("--arg1=x --a --a '中文字äüp' --a 'v'\''1' 'v2' 'v3' -b=v -b='v4' 'v5' 'v6' -c '' 'some name'", $command->getArgs());
+        $this->assertEquals("test --arg1=x --a --a '中文字äüp' --a 'v'\''1' 'v2' 'v3' -b=v -b='v4' 'v5' 'v6' -c '' 'some name'", $command->getExecCommand());
     }
     public function testCanResetArguments()
     {
