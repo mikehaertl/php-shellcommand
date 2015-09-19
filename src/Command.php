@@ -303,8 +303,8 @@ class Command
 
             if (is_resource($process)) {
 
-                $this->_stdOut = trim(stream_get_contents($pipes[1]));
-                $this->_stdErr = trim(stream_get_contents($pipes[2]));
+                $this->_stdOut = stream_get_contents($pipes[1]);
+                $this->_stdErr = stream_get_contents($pipes[2]);
                 fclose($pipes[1]);
                 fclose($pipes[2]);
 
