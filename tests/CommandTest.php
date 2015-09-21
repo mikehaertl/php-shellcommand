@@ -125,6 +125,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($command->execute());
         $this->assertTrue($command->getExecuted());
         $this->assertEquals("CommandTest.php", $command->getOutput());
+        $this->assertEquals("CommandTest.php\n", $command->getOutput(false));
         $this->assertEmpty($command->getError());
         $this->assertEmpty($command->getStdErr());
         $this->assertEquals(0, $command->getExitCode());

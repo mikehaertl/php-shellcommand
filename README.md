@@ -115,3 +115,6 @@ pass `command`, `execCommand` and `args` as options. This will call the respecti
  * `getExitCode()`: The exit code.
  * `getExecuted()`: Whether the command was successfully executed.
  * `execute()`: Executes the command and returns `true` on success, `false` otherwhise.
+
+> **Note:** `getError()`, `getStdErr()` and `getOutput()` return the trimmed output.
+> You can pass `false` to these methods if you need any possible line breaks at the end.

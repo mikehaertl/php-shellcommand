@@ -1,8 +1,9 @@
 # CHANGELOG
 
-## 1.1.1
+## 1.2.0
 
- WIP
+ * Add option to return untrimmed output and error
+
 
 ## 1.1.0
 

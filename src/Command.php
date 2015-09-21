@@ -7,7 +7,7 @@ namespace mikehaertl\shellcommand;
  * This class represents a shell command.
  *
  * @author Michael Härtl <haertl.mike@gmail.com>
- * @version 1.1.1-dev
+ * @version 1.2.0-dev
  * @license http://www.opensource.org/licenses/MIT
  */
 class Command
@@ -232,27 +232,30 @@ class Command
     }
 
     /**
+     * @param bool $trim whether to `trim()` the return value. The default is `true`.
      * @return string the command output (stdout). Empty if none.
      */
-    public function getOutput()
+    public function getOutput($trim = true)
     {
-        return $this->_stdOut;
+        return $trim ? trim($this->_stdOut) : $this->_stdOut;
     }
 
     /**
+     * @param bool $trim whether to `trim()` the return value. The default is `true`.
      * @return string the error message, either stderr or internal message. Empty if none.
      */
-    public function getError()
+    public function getError($trim = true)
     {
-        return $this->_error;
+        return $trim ? trim($this->_error) : $this->_error;
     }
 
     /**
+     * @param bool $trim whether to `trim()` the return value. The default is `true`.
      * @return string the stderr output. Empty if none.
      */
-    public function getStdErr()
+    public function getStdErr($trim = true)
     {
-        return $this->_stdErr;
+        return $trim ? trim($this->_stdErr) : $this->_stdErr;
     }
 
     /**
@@ -288,7 +291,7 @@ class Command
         if ($this->useExec) {
             $execCommand = $this->captureStdErr ? "$command 2>&1" : $command;
             exec($execCommand, $output, $this->_exitCode);
-            $this->_stdOut = trim(implode("\n", $output));
+            $this->_stdOut = implode("\n", $output);
             if ($this->_exitCode!==0) {
                 $this->_stdErr = $this->_stdOut;
                 $this->_error = empty($this->_stdErr) ? 'Command failed' : $this->_stdErr;
@@ -303,8 +306,8 @@ class Command
 
             if (is_resource($process)) {
 
-                $this->_stdOut = trim(stream_get_contents($pipes[1]));
-                $this->_stdErr = trim(stream_get_contents($pipes[2]));
+                $this->_stdOut = stream_get_contents($pipes[1]);
+                $this->_stdErr = stream_get_contents($pipes[2]);
                 fclose($pipes[1]);
                 fclose($pipes[2]);
 
