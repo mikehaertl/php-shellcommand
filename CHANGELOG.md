@@ -4,7 +4,6 @@
 
  * Add option to return untrimmed output and error
 
-
 ## 1.1.0
 
  * Issue #7: UTF-8 encoded arguments where truncated
