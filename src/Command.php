@@ -162,7 +162,7 @@ class Command
     {
         if ($this->_execCommand===null) {
             $command = $this->getCommand();
-            if (!$command) {
+            if (!$command || !is_executable($command)) {
                 $this->_error = 'Could not locate any executable command';
                 return false;
             }
