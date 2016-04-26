@@ -58,7 +58,7 @@ $command->addArg('--name=', "d'Artagnan");
 
 // Add argument with several values
 // results in --keys key1 key2
-$command->addArg('--keys', array('key1','key2')
+$command->addArg('--keys', array('key1','key2');
 ```
 
 ## API
