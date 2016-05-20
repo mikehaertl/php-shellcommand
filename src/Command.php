@@ -100,6 +100,11 @@ class Command
     protected $_executed = false;
 
     /**
+     * @var bool whether process output should be echoed directly to stdout
+     */
+    protected $echoOutput = false;
+
+    /**
      * @param string|array $options either a command string or an options array (see setOptions())
      */
     public function __construct($options = null)
@@ -306,7 +311,17 @@ class Command
 
             if (is_resource($process)) {
 
-                $this->_stdOut = stream_get_contents($pipes[1]);
+                if ($this->echoOutput) {
+                    $this->_stdOut = "";
+                    while (!feof($pipes[1])) {
+                        $fragment = fgets($pipes[1]);
+                        $this->_stdOut .= $fragment;
+                        echo($fragment);
+                    }
+                } else {
+                    $this->_stdOut = stream_get_contents($pipes[1]);
+                }
+
                 $this->_stdErr = stream_get_contents($pipes[2]);
                 fclose($pipes[1]);
                 fclose($pipes[2]);
