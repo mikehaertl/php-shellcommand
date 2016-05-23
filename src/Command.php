@@ -142,7 +142,13 @@ class Command
      */
     public function setCommand($command)
     {
-        $this->_command = $this->escapeCommand ? escapeshellcmd($command) : $command;
+        if ($this->escapeCommand) {
+            $command = escapeshellcmd($command);
+        }
+        if ($this->getIsWindows()) {
+            $command = sprintf('cd %s && %s', escapeshellarg(dirname($command)), basename($command));
+        }
+        $this->_command = $command;
         return $this;
     }
 
