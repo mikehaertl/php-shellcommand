@@ -146,7 +146,9 @@ class Command
             $command = escapeshellcmd($command);
         }
         if ($this->getIsWindows()) {
-            $command = sprintf('cd %s && %s', escapeshellarg(dirname($command)), basename($command));
+            // Make sure to switch to correct drive like "E:" first if we have a full path in command
+            $chdrive = (isset($command[1]) && $command[1]===':') ? $command[0].': && ' : '';
+            $command = sprintf($chdrive.'cd %s && %s', escapeshellarg(dirname($command)), basename($command));
         }
         $this->_command = $command;
         return $this;
