@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 1.2.2
+
+ * Issue #16: Command on different drive didn't work on windows
+
+## 1.2.1
+
+ * Issue #1: Command with spaces didn't work on windows
+
 ## 1.2.0
 
  * Add option to return untrimmed output and error
