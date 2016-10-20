@@ -115,6 +115,7 @@ class Command
      * @param array $options array of name => value options that should be applied to the object
      * You can also pass options that use a setter, e.g. you can pass a `fileName` option which
      * will be passed to `setFileName()`.
+     * @throws \Exception
      * @return static for method chaining
      */
     public function setOptions($options)
