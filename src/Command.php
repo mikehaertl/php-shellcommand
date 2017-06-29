@@ -147,14 +147,14 @@ class Command
             $command = escapeshellcmd($command);
         }
         if ($this->getIsWindows()) {
-            $position = null;
-
             // Make sure to switch to correct drive like "E:" first if we have a full path in command
             if (isset($command[1]) && $command[1]===':') {
                 $position = 1;
                 // Could be a quoted absolute path because of spaces. i.e. "C:\Program Files (x86)\file.exe"
             } elseif (isset($command[2]) && $command[2]===':') {
                 $position = 2;
+            } else {
+                $position = false;    
             }
 
             // Absolute path. If it's a relative path, let it slide.
