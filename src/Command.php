@@ -148,8 +148,19 @@ class Command
         }
         if ($this->getIsWindows()) {
             // Make sure to switch to correct drive like "E:" first if we have a full path in command
-            $chdrive = (isset($command[1]) && $command[1]===':') ? $command[0].': && ' : '';
-            $command = sprintf($chdrive.'cd %s && %s', escapeshellarg(dirname($command)), basename($command));
+            if (isset($command[1]) && $command[1]===':') {
+                $position = 1;
+                // Could be a quoted absolute path because of spaces. i.e. "C:\Program Files (x86)\file.exe"
+            } elseif (isset($command[2]) && $command[2]===':') {
+                $position = 2;
+            } else {
+                $position = false;    
+            }
+
+            // Absolute path. If it's a relative path, let it slide.
+            if ($position) {
+                $command = sprintf($command[$position - 1].': && cd %s && %s', escapeshellarg(dirname($command)), basename($command));
+            }
         }
         $this->_command = $command;
         return $this;
