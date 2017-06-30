@@ -5,7 +5,6 @@ php-shellcommand
 [![Latest Stable Version](https://poser.pugx.org/mikehaertl/php-shellcommand/v/stable.svg)](https://packagist.org/packages/mikehaertl/php-shellcommand)
 [![Total Downloads](https://poser.pugx.org/mikehaertl/php-shellcommand/downloads)](https://packagist.org/packages/mikehaertl/php-shellcommand)
 [![Latest Unstable Version](https://poser.pugx.org/mikehaertl/php-shellcommand/v/unstable.svg)](https://packagist.org/packages/mikehaertl/php-shellcommand)
-[![HHVM Status](http://hhvm.h4cc.de/badge/mikehaertl/php-shellcommand.png)](http://hhvm.h4cc.de/package/mikehaertl/php-shellcommand)
 [![License](https://poser.pugx.org/mikehaertl/php-shellcommand/license.svg)](https://packagist.org/packages/mikehaertl/php-shellcommand)
 
 php-shellcommand provides a simple object oriented interface to execute shell commands.

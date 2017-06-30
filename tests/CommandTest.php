@@ -1,7 +1,7 @@
 <?php
 use mikehaertl\shellcommand\Command;
 
-class CommandTest extends \PHPUnit_Framework_TestCase
+class CommandTest extends \PHPUnit\Framework\TestCase
 {
     public function setUp()
     {
@@ -119,13 +119,13 @@ class CommandTest extends \PHPUnit_Framework_TestCase
     public function testCanRunValidCommand()
     {
         $dir = __DIR__;
-        $command = new Command("/bin/ls $dir");
+        $command = new Command("/bin/ls $dir/Command*");
 
         $this->assertFalse($command->getExecuted());
         $this->assertTrue($command->execute());
         $this->assertTrue($command->getExecuted());
-        $this->assertEquals("CommandTest.php", $command->getOutput());
-        $this->assertEquals("CommandTest.php\n", $command->getOutput(false));
+        $this->assertEquals("$dir/CommandTest.php", $command->getOutput());
+        $this->assertEquals("$dir/CommandTest.php\n", $command->getOutput(false));
         $this->assertEmpty($command->getError());
         $this->assertEmpty($command->getStdErr());
         $this->assertEquals(0, $command->getExitCode());
@@ -170,13 +170,13 @@ class CommandTest extends \PHPUnit_Framework_TestCase
     public function testCanRunValidCommandWithExec()
     {
         $dir = __DIR__;
-        $command = new Command("/bin/ls $dir");
+        $command = new Command("/bin/ls $dir/Command*");
         $command->useExec = true;
 
         $this->assertFalse($command->getExecuted());
         $this->assertTrue($command->execute());
         $this->assertTrue($command->getExecuted());
-        $this->assertEquals("CommandTest.php", $command->getOutput());
+        $this->assertEquals("$dir/CommandTest.php", $command->getOutput());
         $this->assertEmpty($command->getError());
         $this->assertEmpty($command->getStdErr());
         $this->assertEquals(0, $command->getExitCode());
