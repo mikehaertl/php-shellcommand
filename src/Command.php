@@ -332,8 +332,9 @@ class Command
                 fclose($pipes[2]);
 
                 $this->_exitCode = proc_close($process);
-
-                if ($this->_exitCode!==0) {
+                
+                // proc_close returns -1 when error occurred, success value can be equal or great then 0
+                if ($this->_exitCode===-1) {
                     $this->_error = $this->_stdErr ? $this->_stdErr : "Failed without error message: $command";
                     return false;
                 }
