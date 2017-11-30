@@ -224,5 +224,14 @@ class CommandTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($command->getExecuted());
         $this->assertEquals($tmpDir, $command->getOutput());
     }
+    public function testCanRunCommandWithStandardInput()
+    {
+        $command = new Command('head');
+        $command->addArg('-n', 1);
+        $command->setStdIn("1\n2\n3\n");
+        $this->assertTrue($command->execute());
+        $this->assertTrue($command->getExecuted());
+        $this->assertEquals("1", $command->getOutput());
+    }
 
 }
