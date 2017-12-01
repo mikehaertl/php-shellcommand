@@ -337,7 +337,7 @@ class Command
                 1   => array('pipe','w'),
                 2   => array('pipe', $this->getIsWindows() ? 'a' : 'w'),
             );
-            if (isset($this->_stdIn)) {
+            if ($this->_stdIn!==null) {
                 $descriptors[0] = array('pipe', 'r');
             }
 
@@ -345,7 +345,7 @@ class Command
 
             if (is_resource($process)) {
 
-                if(isset($this->_stdIn)) {
+                if($this->_stdIn!==null) {
                     fwrite($pipes[0], $this->_stdIn);
                     fclose($pipes[0]);
                 }
