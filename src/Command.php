@@ -60,6 +60,11 @@ class Command
     public $locale;
 
     /**
+     * @var string to pipe to standard input
+     */
+    protected $_stdIn;
+
+    /**
      * @var string the command to execute
      */
     protected $_command;
@@ -163,6 +168,16 @@ class Command
             }
         }
         $this->_command = $command;
+        return $this;
+    }
+
+    /**
+     * @param string $stdIn If set, the string will be piped to the command via standard input.
+     * This enables the same functionality as piping on the command line.
+     * @return static for method chaining
+     */
+    public function setStdIn($stdIn) {
+        $this->_stdIn = $stdIn;
         return $this;
     }
 
@@ -322,10 +337,18 @@ class Command
                 1   => array('pipe','w'),
                 2   => array('pipe', $this->getIsWindows() ? 'a' : 'w'),
             );
+            if ($this->_stdIn!==null) {
+                $descriptors[0] = array('pipe', 'r');
+            }
+
             $process = proc_open($command, $descriptors, $pipes, $this->procCwd, $this->procEnv, $this->procOptions);
 
             if (is_resource($process)) {
 
+                if($this->_stdIn!==null) {
+                    fwrite($pipes[0], $this->_stdIn);
+                    fclose($pipes[0]);
+                }
                 $this->_stdOut = stream_get_contents($pipes[1]);
                 $this->_stdErr = stream_get_contents($pipes[2]);
                 fclose($pipes[1]);
