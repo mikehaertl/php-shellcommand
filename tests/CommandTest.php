@@ -244,7 +244,7 @@ class CommandTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($command->execute());
         $this->assertTrue($command->getExecuted());
         $this->assertEquals("^I", $command->getOutput());
-        fclose($tmptfile);
+        fclose($tmpfile);
     }
 
 }
