@@ -174,6 +174,8 @@ class Command
     /**
      * @param string|resource $stdIn If set, the string will be piped to the command via standard input.
      * This enables the same functionality as piping on the command line.
+     * It can also be a resource like a file handle or a stream in which case its content will be piped
+     * into the command like an input redirection.
      * @return static for method chaining
      */
     public function setStdIn($stdIn) {
