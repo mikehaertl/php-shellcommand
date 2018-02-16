@@ -111,7 +111,7 @@ pass `command`, `execCommand` and `args` as options. This will call the respecti
        An array can be passed to add more than one value for a key, e.g. `addArg('--exclude', array('val1','val2'))`
        which will create the option "--exclude 'val1' 'val2'".
     * `$escape`: If set, this overrides the `$escapeArgs` setting and enforces escaping/no escaping
- * `setStdIn()`: String to supply command via standard input.
+ * `setStdIn()`: String or resource to supply to command via standard input.
  * `getOutput()`: The command output as string. Empty if none.
  * `getError()`: The error message, either stderr or internal message. Empty if no error.
  * `getStdErr()`: The stderr output. Empty if none.
