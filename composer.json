@@ -9,6 +9,12 @@
             "email": "haertl.mike@gmail.com"
         }
     ],
+    "require": {
+	"php": "^5.4.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8"
+    },
     "autoload": {
         "psr-4": {
             "mikehaertl\\shellcommand\\": "src/"
