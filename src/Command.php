@@ -207,35 +207,19 @@ class Command
      */
     public function getExecCommand()
     {
-        /*if ($this->_execCommand===null) {
+		if ($this->_execCommand===null)
+		{
             $command = $this->getCommand();
             if (!$command) {
                 $this->_error = 'Could not locate any executable command';
                 return false;
             }
             $args = $this->getArgs();
-            $this->_execCommand = $args ? $command.' '.$args : $command;
-        }
-        return $this->_execCommand;*/
-		        if ($this->_execCommand===null)
-		{
-            $command = $this->getCommand();
-            if (!$command)
-			{
-                $this->_error = 'Could not locate any executable command';
-                return false;
-            }
-            $args = $this->getArgs();
-			if($args && $this->read_args_from_stdin)
-			{
+			if($args && $this->read_args_from_stdin) {
 				$this->_execCommand = $command.' --read-args-from-stdin <'.$this->configFilename;
-			}
-			elseif($args)
-			{
+			} elseif($args)	{
 				$this->_execCommand = $command.' '.$args;
-			}
-			else
-			{
+			} else {
 				$this->_execCommand = $command;
 			}
         }
