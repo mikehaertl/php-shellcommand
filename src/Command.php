@@ -12,6 +12,16 @@ namespace mikehaertl\shellcommand;
  */
 class Command
 {
+	/**
+     * @var bool. create a config file passed in the stdin of wkhtmltopdf, used on windows for bypass the command line character limit, Default is `false`.
+     */
+    public $read_args_from_stdin = false;
+	
+	/**
+     * @var string|null. used with read_args_from_stdin option. Default is `null` when not used.
+     */
+    public $configFilename;
+	
     /**
      * @var bool whether to escape any argument passed through `addArg()`. Default is `true`.
      */
@@ -197,14 +207,21 @@ class Command
      */
     public function getExecCommand()
     {
-        if ($this->_execCommand===null) {
+		if ($this->_execCommand===null)
+		{
             $command = $this->getCommand();
             if (!$command) {
                 $this->_error = 'Could not locate any executable command';
                 return false;
             }
             $args = $this->getArgs();
-            $this->_execCommand = $args ? $command.' '.$args : $command;
+			if($args && $this->read_args_from_stdin) {
+				$this->_execCommand = $command.' --read-args-from-stdin <'.$this->configFilename;
+			} elseif($args)	{
+				$this->_execCommand = $command.' '.$args;
+			} else {
+				$this->_execCommand = $command;
+			}
         }
         return $this->_execCommand;
     }
@@ -384,6 +401,15 @@ class Command
     public function getIsWindows()
     {
         return strncasecmp(PHP_OS, 'WIN', 3)===0;
+    }
+	
+	
+	/**
+     * @return bool
+     */
+    public function getReadArgsFromStdin()
+    {
+        return $this->read_args_from_stdin;
     }
 
     /**
