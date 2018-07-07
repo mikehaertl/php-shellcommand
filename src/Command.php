@@ -164,7 +164,7 @@ class Command
 
             // Absolute path. If it's a relative path, let it slide.
             if ($position) {
-                $command = sprintf($command[$position - 1].': && cd %s && %s', escapeshellarg(dirname($command)), basename($command));
+                $command = sprintf($command[$position - 1].': && cd %s && %s', escapeshellarg(dirname($command)), escapeshellarg(basename($command)));
             }
         }
         $this->_command = $command;
