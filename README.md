@@ -9,6 +9,20 @@ php-shellcommand
 
 php-shellcommand provides a simple object oriented interface to execute shell commands.
 
+## Installing
+
+### Prerequisites
+
+Your php version must be `5.4` or later.
+
+### Installing with composer
+
+This package can be installed easily using composer.
+
+```
+composer install ndolestudio/darksky-php
+```
+
 ## Features
 
  * Catches `stdOut`, `stdErr` and `exitCode`
