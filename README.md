@@ -20,7 +20,7 @@ Your php version must be `5.4` or later.
 This package can be installed easily using composer.
 
 ```
-composer install mikehaertl/php-shellcommand
+composer require mikehaertl/php-shellcommand
 ```
 
 ## Features
