@@ -54,6 +54,15 @@ class Command
     public $procOptions;
 
     /**
+     * @var bool|null whether to set the stdout/stderr streams to non-blocking mode
+     * when `proc_open()` is used. This can fix issues with long running
+     * commands that hang indefinitely but can cause problems on Windows
+     * systems. The default is `null` in which case non-blocking mode is only
+     * enabled on non-Windows systems.
+     */
+    public $nonBlockingMode;
+
+    /**
      * @var null|string the locale to temporarily set before calling `escapeshellargs()`. Default is `null` for none.
      */
     public $locale;
@@ -345,6 +354,13 @@ class Command
             $process = proc_open($command, $descriptors, $pipes, $this->procCwd, $this->procEnv, $this->procOptions);
 
             if (is_resource($process)) {
+                // Issue #20 Set non-blocking mode to fix hanging processes
+                $nonBlocking = $this->nonBlockingMode === null ?
+                    !$this->getIsWindows() : $this->nonBlockingMode;
+                if ($nonBlocking) {
+                    stream_set_blocking($pipes[1], false);
+                    stream_set_blocking($pipes[2], false);
+                }
 
                 if ($this->_stdIn!==null) {
                     if (is_resource($this->_stdIn) &&
@@ -362,8 +378,10 @@ class Command
 
                 $this->_exitCode = proc_close($process);
 
-                if ($this->_exitCode!==0) {
-                    $this->_error = $this->_stdErr ? $this->_stdErr : "Failed without error message: $command";
+                if ($this->_exitCode !== 0) {
+                    $this->_error = $this->_stdErr ?
+                        $this->_stdErr :
+                        "Failed without error message: $command (Exit code: {$this->_exitCode})";
                     return false;
                 }
             } else {
