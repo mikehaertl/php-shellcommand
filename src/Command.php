@@ -54,11 +54,11 @@ class Command
     public $procOptions;
 
     /**
-     * @var bool|null whether to set the stdout/stderr streams to non-blocking mode
-     * when `proc_open()` is used. This can fix issues with long running
-     * commands that hang indefinitely but can cause problems on Windows
-     * systems. The default is `null` in which case non-blocking mode is only
-     * enabled on non-Windows systems.
+     * @var bool|null whether to set the stdin/stdout/stderr streams to
+     * non-blocking mode when `proc_open()` is used. This allows to have huge
+     * inputs/outputs without making the process hang. The default is `null`
+     * which will enable the feature on Non-Windows systems. Set it to `true`
+     * or `false` to manually enable/disable it. It does not work on Windows.
      */
     public $nonBlockingMode;
 
