@@ -343,40 +343,92 @@ class Command
                 return false;
             }
         } else {
+            $isInputStream = $this->_stdIn !== null &&
+                is_resource($this->_stdIn) &&
+                in_array(get_resource_type($this->_stdIn), array('file', 'stream'));
+            $isInputString = is_string($this->_stdIn);
+            $hasInput = $isInputStream || $isInputString;
+
             $descriptors = array(
                 1   => array('pipe','w'),
                 2   => array('pipe', $this->getIsWindows() ? 'a' : 'w'),
             );
-            if ($this->_stdIn!==null) {
+            if ($hasInput) {
                 $descriptors[0] = array('pipe', 'r');
             }
+
+            // Issue #20 Set non-blocking mode to fix hanging processes
+            $nonBlocking = $this->nonBlockingMode === null ?
+                !$this->getIsWindows() : $this->nonBlockingMode;
 
             $process = proc_open($command, $descriptors, $pipes, $this->procCwd, $this->procEnv, $this->procOptions);
 
             if (is_resource($process)) {
-                // Issue #20 Set non-blocking mode to fix hanging processes
-                $nonBlocking = $this->nonBlockingMode === null ?
-                    !$this->getIsWindows() : $this->nonBlockingMode;
+
                 if ($nonBlocking) {
                     stream_set_blocking($pipes[1], false);
                     stream_set_blocking($pipes[2], false);
-                }
-
-                if ($this->_stdIn!==null) {
-                    if (is_resource($this->_stdIn) &&
-                        in_array(get_resource_type($this->_stdIn), array('file', 'stream'), true)) {
-                        stream_copy_to_stream($this->_stdIn, $pipes[0]);
-                    } else {
-                        fwrite($pipes[0], $this->_stdIn);
+                    if ($hasInput) {
+                        $writtenBytes = 0;
+                        stream_set_blocking($pipes[0], false);
+                        if ($isInputStream) {
+                            stream_set_blocking($this->_stdIn, false);
+                        }
                     }
-                    fclose($pipes[0]);
+                    $running = true;
+                    // Due to the non-blocking streams we now have to check if
+                    // the process is still running. We also need to ensure
+                    // that all the pipes are written/read alternately until
+                    // there's nothing left to write/read.
+                    while ($running) {
+                        $status = proc_get_status($process);
+                        $running = $status['running'];
+                        if ($hasInput && $running) {
+                            if ($isInputStream) {
+                                $written = stream_copy_to_stream($this->_stdIn, $pipes[0], 16 * 1024, $writtenBytes);
+                                if ($written === false || $written === 0) {
+                                    fclose($pipes[0]);
+                                } else {
+                                    $writtenBytes += $written;
+                                }
+                            } else {
+                                if ($writtenBytes < strlen($this->_stdIn)) {
+                                    $writtenBytes += fwrite($pipes[0], substr($this->_stdIn, $writtenBytes));
+                                } else {
+                                    fclose($pipes[0]);
+                                }
+                            }
+                        }
+                        while (($out = fgets($pipes[1])) !== false) {
+                            $this->_stdOut .= $out;
+                        }
+                        while (($err = fgets($pipes[2])) !== false) {
+                            $this->_stdErr .= $err;
+                        }
+                        if (!$running) {
+                            $this->_exitCode = $status['exitcode'];
+                            fclose($pipes[1]);
+                            fclose($pipes[2]);
+                            proc_close($process);
+                        } else {
+                            usleep(10000); // wait 10 ms
+                        }
+                    }
+                } else {
+                    if ($hasInput) {
+                        if ($isInputStream) {
+                            stream_copy_to_stream($this->_stdIn, $pipes[0]);
+                        } elseif ($isInputString) {
+                            fwrite($pipes[0], $this->_stdIn);
+                        }
+                        fclose($pipes[0]);
+                    }
+                    $this->_stdOut = stream_get_contents($pipes[1]);
+                    $this->_stdErr = stream_get_contents($pipes[2]);
+                    fclose($pipes[1]);
+                    fclose($pipes[2]);
+                    $this->_exitCode = proc_close($process);
                 }
-                $this->_stdOut = stream_get_contents($pipes[1]);
-                $this->_stdErr = stream_get_contents($pipes[2]);
-                fclose($pipes[1]);
-                fclose($pipes[2]);
-
-                $this->_exitCode = proc_close($process);
 
                 if ($this->_exitCode !== 0) {
                     $this->_error = $this->_stdErr ?
