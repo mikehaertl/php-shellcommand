@@ -403,14 +403,24 @@ class Command
                             stream_set_blocking($this->_stdIn, false);
                         }
                     }
+
+                    // Due to the non-blocking streams we now have to check in
+                    // a loop if the process is still running. We also need to
+                    // ensure that all the pipes are written/read alternately
+                    // until there's nothing left to write/read.
                     $running = true;
-                    // Due to the non-blocking streams we now have to check if
-                    // the process is still running. We also need to ensure
-                    // that all the pipes are written/read alternately until
-                    // there's nothing left to write/read.
                     while ($running) {
                         $status = proc_get_status($process);
                         $running = $status['running'];
+
+                        // We first write to stdIn if we have an input. For big
+                        // inputs it will only write until the input buffer of
+                        // the command is full (the command may now wait that
+                        // we read the output buffers - see below). So we may
+                        // have to continue writing in another cycle.
+                        //
+                        // After everything is written it's safe to close the
+                        // input pipe.
                         if ($hasInput && $running) {
                             if ($isInputStream) {
                                 $written = stream_copy_to_stream($this->_stdIn, $pipes[0], 16 * 1024, $writtenBytes);
@@ -427,19 +437,32 @@ class Command
                                 }
                             }
                         }
+
+                        // Read out the output buffers because if they are full
+                        // the command may block execution. We do this even if
+                        // $running is `false`, because there could be output
+                        // left in the buffers.
+                        //
+                        // The latter is only an assumption and needs to be
+                        // verified - but it does not hurt either and works as
+                        // expected.
+                        //
                         while (($out = fgets($pipes[1])) !== false) {
                             $this->_stdOut .= $out;
                         }
                         while (($err = fgets($pipes[2])) !== false) {
                             $this->_stdErr .= $err;
                         }
+
                         if (!$running) {
                             $this->_exitCode = $status['exitcode'];
                             fclose($pipes[1]);
                             fclose($pipes[2]);
                             proc_close($process);
                         } else {
-                            usleep(10000); // wait 10 ms
+                            // The command is still running. Let's wait some
+                            // time before we start the next cycle.
+                            usleep(10000);
                         }
                     }
                 } else {
