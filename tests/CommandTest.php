@@ -280,4 +280,19 @@ class CommandTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(strlen($expected), strlen($command->getOutput()));
         fclose($tmpfile);
     }
+
+    public function testCanTerminateLongRunningCommandWithTimeout()
+    {
+        $command = new Command('sleep 5');
+        $command->timeout = 2;
+        $startTime = time();
+        $this->assertFalse($command->execute());
+        $stopTime = time();
+        $this->assertFalse($command->getExecuted());
+        $this->assertNotEquals(0, $command->getExitCode());
+        $this->assertStringStartsWith('Command terminated by signal', $command->getError());
+        $this->assertStringStartsWith('Command terminated by signal', $command->getStdErr());
+        $this->assertEmpty($command->getOutput());
+        $this->assertEquals(2, $stopTime - $startTime);
+    }
 }
