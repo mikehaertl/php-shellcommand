@@ -93,6 +93,11 @@ $command->setStdIn('string');
     PHP working dir.
  * `$procEnv`: An array with environment variables to pass to `proc_open()`. Default is `null` for none.
  * `$procOptions`: An array of `other_options` for `proc_open()`. Default is `null` for none.
+ * `$nonBlockingMode`: Whether to set the stdin/stdout/stderr streams to non-blocking
+    mode when `proc_open()` is used. This allows to have huge inputs/outputs
+    without making the process hang. The default is `null` which will enable
+    the feature on Non-Windows systems. Set it to `true` or `false` to manually
+    enable/disable it. Note that it doesn't work on Windows.
  * `$locale`: The locale to (temporarily) set with `setlocale()` before running the command.
    This can be set to e.g. `en_US.UTF-8` if you have issues with UTF-8 encoded arguments.
 
