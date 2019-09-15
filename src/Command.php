@@ -70,6 +70,13 @@ class Command
     public $nonBlockingMode;
 
     /**
+     * @var int the time in seconds after which a command should be terminated.
+     * This only works in non-blocking mode. Default is `null` which means the
+     * process is never terminated.
+     */
+    public $timeout;
+
+    /**
      * @var null|string the locale to temporarily set before calling
      * `escapeshellargs()`. Default is `null` for none.
      */
@@ -376,6 +383,7 @@ class Command
                 in_array(get_resource_type($this->_stdIn), array('file', 'stream'));
             $isInputString = is_string($this->_stdIn);
             $hasInput = $isInputStream || $isInputString;
+            $hasTimeout = $this->timeout !== null && $this->timeout > 0;
 
             $descriptors = array(
                 1   => array('pipe','w'),
@@ -385,10 +393,12 @@ class Command
                 $descriptors[0] = array('pipe', 'r');
             }
 
+
             // Issue #20 Set non-blocking mode to fix hanging processes
             $nonBlocking = $this->nonBlockingMode === null ?
                 !$this->getIsWindows() : $this->nonBlockingMode;
 
+            $startTime = $hasTimeout ? time() : 0;
             $process = proc_open($command, $descriptors, $pipes, $this->procCwd, $this->procEnv, $this->procOptions);
 
             if (is_resource($process)) {
@@ -457,8 +467,25 @@ class Command
                             $this->_stdErr .= $err;
                         }
 
+                        $runTime = $hasTimeout ? time() - $startTime : 0;
+                        if ($isRunning && $hasTimeout && $runTime >= $this->timeout) {
+                            // Only send a SIGTERM and handle status in the next cycle
+                            proc_terminate($process);
+                        }
+
                         if (!$isRunning) {
                             $this->_exitCode = $status['exitcode'];
+                            if ($this->_exitCode !== 0 && empty($this->_stdErr)) {
+                                if ($status['stopped']) {
+                                    $signal = $status['stopsig'];
+                                    $this->_stdErr = "Command stopped by signal $signal";
+                                } elseif ($status['signaled']) {
+                                    $signal = $status['termsig'];
+                                    $this->_stdErr = "Command terminated by signal $signal";
+                                } else {
+                                    $this->_stdErr = 'Command unexpectedly terminated without error message';
+                                }
+                            }
                             fclose($pipes[1]);
                             fclose($pipes[2]);
                             proc_close($process);

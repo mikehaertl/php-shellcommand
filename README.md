@@ -98,6 +98,9 @@ $command->setStdIn('string');
     without making the process hang. The default is `null` which will enable
     the feature on Non-Windows systems. Set it to `true` or `false` to manually
     enable/disable it. Note that it doesn't work on Windows.
+ * `$timeout`: The time in seconds after which the command should be
+    terminated. This only works in non-blocking mode. Default is `null` which
+    means the process is never terminated.
  * `$locale`: The locale to (temporarily) set with `setlocale()` before running the command.
    This can be set to e.g. `en_US.UTF-8` if you have issues with UTF-8 encoded arguments.
 
