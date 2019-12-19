@@ -272,7 +272,7 @@ class Command
      * @param string|array|null $value the optional argument value which will
      * get escaped if $escapeArgs is true.  An array can be passed to add more
      * than one value for a key, e.g. `addArg('--exclude',
-     * array('val1','val2'))` which will create the option `--exclude 'val1'
+     * array('val1','val2'))` which will create the option `'--exclude' 'val1'
      * 'val2'`.
      * @param bool|null $escape if set, this overrides the $escapeArgs setting
      * and enforces escaping/no escaping
@@ -288,18 +288,25 @@ class Command
             setlocale(LC_CTYPE, $this->locale);
         }
         if ($value === null) {
-            // Only escape single arguments if explicitely requested
-            $this->_args[] = $escape ? escapeshellarg($key) : $key;
+            $this->_args[] = $doEscape ? escapeshellarg($key) : $key;
         } else {
-            $separator = substr($key, -1)==='=' ? '' : ' ';
+            if (substr($key, -1) === '=') {
+                $separator = '=';
+                $argKey = substr($key, 0, -1);
+            } else {
+                $separator = ' ';
+                $argKey = $key;
+            }
+            $argKey = $doEscape ? escapeshellarg($argKey) : $argKey;
+
             if (is_array($value)) {
                 $params = array();
                 foreach ($value as $v) {
                     $params[] = $doEscape ? escapeshellarg($v) : $v;
                 }
-                $this->_args[] = $key . $separator.implode(' ',$params);
+                $this->_args[] = $argKey . $separator . implode(' ', $params);
             } else {
-                $this->_args[] = $key . $separator .
+                $this->_args[] = $argKey . $separator .
                     ($doEscape ? escapeshellarg($value) : $value);
             }
         }

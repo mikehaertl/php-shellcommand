@@ -62,7 +62,7 @@ class BlockingCommandTest extends \PHPUnit\Framework\TestCase
         $command->nonBlockingMode = false;
         $command->addArg('-l');
         $command->addArg('-n');
-        $this->assertEquals("ls -l -n", $command->getExecCommand());
+        $this->assertEquals("ls '-l' '-n'", $command->getExecCommand());
         $this->assertFalse($command->getExecuted());
         $this->assertTrue($command->execute());
         $this->assertTrue($command->getExecuted());
