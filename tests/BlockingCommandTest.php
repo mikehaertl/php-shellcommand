@@ -1,7 +1,10 @@
 <?php
+namespace tests;
+
+use PHPUnit\Framework\TestCase;
 use mikehaertl\shellcommand\Command;
 
-class BlockingCommandTest extends \PHPUnit\Framework\TestCase
+class BlockingCommandTest extends TestCase
 {
     public function setUp()
     {
