@@ -6,12 +6,6 @@ use mikehaertl\shellcommand\Command;
 
 class BlockingCommandTest extends TestCase
 {
-    public function setUp()
-    {
-        // Default in some installations
-        setlocale(LC_CTYPE, 'C');
-    }
-
     // Create command from command string
     public function testCanPassCommandStringToConstructor()
     {

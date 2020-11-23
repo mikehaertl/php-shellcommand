@@ -1,11 +1,11 @@
 php-shellcommand
 ===========
 
-[![Build Status](https://secure.travis-ci.org/mikehaertl/php-shellcommand.png)](http://travis-ci.org/mikehaertl/php-shellcommand)
-[![Latest Stable Version](https://poser.pugx.org/mikehaertl/php-shellcommand/v/stable.svg)](https://packagist.org/packages/mikehaertl/php-shellcommand)
-[![Total Downloads](https://poser.pugx.org/mikehaertl/php-shellcommand/downloads)](https://packagist.org/packages/mikehaertl/php-shellcommand)
-[![Latest Unstable Version](https://poser.pugx.org/mikehaertl/php-shellcommand/v/unstable.svg)](https://packagist.org/packages/mikehaertl/php-shellcommand)
-[![License](https://poser.pugx.org/mikehaertl/php-shellcommand/license.svg)](https://packagist.org/packages/mikehaertl/php-shellcommand)
+[![GitHub Tests](https://github.com/mikehaertl/php-shellcommand/workflows/Tests/badge.svg)](https://github.com/mikehaertl/php-shellcommand/actions)
+[![Packagist Version](https://img.shields.io/packagist/v/mikehaertl/php-shellcommand?label=version)](https://packagist.org/packages/mikehaertl/php-shellcommand)
+[![Packagist Downloads](https://img.shields.io/packagist/dt/mikehaertl/php-shellcommand)](https://packagist.org/packages/mikehaertl/php-shellcommand)
+[![GitHub license](https://img.shields.io/github/license/mikehaertl/php-shellcommand)](https://github.com/mikehaertl/php-shellcommand/blob/master/LICENSE)
+[![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/mikehaertl/php-shellcommand)](https://packagist.org/packages/mikehaertl/php-shellcommand)
 
 php-shellcommand provides a simple object oriented interface to execute shell commands.
 
