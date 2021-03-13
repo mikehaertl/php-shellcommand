@@ -232,15 +232,15 @@ class Command
      */
     public function getExecCommand()
     {
-        if ($this->_execCommand===null) {
-            $command = $this->getCommand();
-            if (!$command) {
-                $this->_error = 'Could not locate any executable command';
-                return false;
-            }
-            $args = $this->getArgs();
-            $this->_execCommand = $args ? $command.' '.$args : $command;
+        $command = $this->getCommand();
+        if (!$command) {
+            $this->_error = 'Could not locate any executable command';
+            return false;
         }
+
+        $args = $this->getArgs();
+        $this->_execCommand = $args ? $command.' '.$args : $command;
+        
         return $this->_execCommand;
     }
 
