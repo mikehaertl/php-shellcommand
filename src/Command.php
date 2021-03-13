@@ -18,6 +18,12 @@ class Command
     public $escapeArgs = true;
 
     /**
+     * @var bool whether to stream the output of current command getting executed
+     * Default is `false`.
+     */
+    public $streamOutput = false;
+
+    /**
      * @var bool whether to escape the command passed to `setCommand()` or the
      * constructor.  This is only useful if `$escapeArgs` is `false`. Default
      * is `false`.
@@ -469,9 +475,13 @@ class Command
                         //
                         while (($out = fgets($pipes[1])) !== false) {
                             $this->_stdOut .= $out;
+                            if($this->streamOutput)
+                                echo $out;
                         }
                         while (($err = fgets($pipes[2])) !== false) {
                             $this->_stdErr .= $err;
+                            if($this->streamOutput)
+                                echo $err;
                         }
 
                         $runTime = $hasTimeout ? time() - $startTime : 0;
@@ -511,6 +521,18 @@ class Command
                         }
                         fclose($pipes[0]);
                     }
+
+                    if($this->streamOutput)
+                    {
+                        while(!feof($pipes[1]))
+                        {
+                            $return_message = fgets($pipes[1], 1024);
+                            if (strlen($return_message) == 0) break;
+
+                            echo $return_message;
+                        }
+                    }
+                    
                     $this->_stdOut = stream_get_contents($pipes[1]);
                     $this->_stdErr = stream_get_contents($pipes[2]);
                     fclose($pipes[1]);
