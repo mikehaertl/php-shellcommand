@@ -98,11 +98,6 @@ class Command
     protected $_args = array();
 
     /**
-     * @var string the full command string to execute
-     */
-    protected $_execCommand;
-
-    /**
      * @var string the stdout output
      */
     protected $_stdOut = '';
@@ -232,16 +227,14 @@ class Command
      */
     public function getExecCommand()
     {
-        if ($this->_execCommand===null) {
-            $command = $this->getCommand();
-            if (!$command) {
-                $this->_error = 'Could not locate any executable command';
-                return false;
-            }
-            $args = $this->getArgs();
-            $this->_execCommand = $args ? $command.' '.$args : $command;
+        $command = $this->getCommand();
+        if (!$command) {
+            $this->_error = 'Could not locate any executable command';
+            return false;
         }
-        return $this->_execCommand;
+
+        $args = $this->getArgs();
+        return $args ? $command.' '.$args : $command;
     }
 
     /**
