@@ -84,6 +84,8 @@ $command->setStdIn('string');
  * `$escapeArgs`: Whether to escape any argument passed through `addArg()`. Default is `true`.
  * `$escapeCommand`: Whether to escape the command passed to `setCommand()` or the constructor.
     This is only useful if `$escapeArgs` is `false`. Default is `false`.
+ * `$streamOutput`: Whether to echo the output to the console while the current command getting executed. 
+    Default is `false`.
  * `$useExec`: Whether to use `exec()` instead of `proc_open()`. This is a workaround for OS which
    have problems with `proc_open()`. Default is `false`.
  * `$captureStdErr`: Whether to capture stderr when `useExec` is set. This will try to redirect
