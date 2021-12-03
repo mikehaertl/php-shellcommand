@@ -165,6 +165,7 @@ pass `command`, `execCommand` and `args` as options. This will call the respecti
 
  * `__construct($options = null)`
     * `$options`: either a command string or an options array (see `setOptions()`)
+ * `__toString()`: The result from `getExecCommand()`
  * `setOptions($options)`: Set command options
     * `$options`: array of name => value options that should be applied to the object.
        You can also pass options that use a setter, e.g. you can pass a `command` option which
@@ -176,22 +177,27 @@ pass `command`, `execCommand` and `args` as options. This will call the respecti
  * `getCommand()`: The command that was set through `setCommand()` or passed to the constructor.
  * `getExecCommand()`: The full command string to execute.
  * `setArgs($args)`: Set argument as string
-    * `$args`: The command arguments as string. Note, that these will not get escaped!
+    * `$args`: The command arguments as string. Note, that these will not get escaped. This
+      will overwrite the args added with `addArgs()`.
  * `getArgs()`: The command arguments that where set through `setArgs()` or `addArg()`, as string
  * `addArg($key, $value=null, $escape=null)`: Add argument with correct escaping
     * `$key`: The argument key to add e.g. `--feature` or `--name=`. If the key does not end with
-       and `=`, the `$value` will be separated by a space, if any. Keys are not escaped unless
-       `$value` is null and `$escape` is `true`.
-    * `$value`: The optional argument value which will get escaped if `$escapeArgs` is true.
+       and `=`, the (optional) `$value` will be separated by a space. The key will get
+       escaped if `$escapeArgs` is `true`.
+    * `$value`: The optional argument value which will get escaped if `$escapeArgs` is `true`.
        An array can be passed to add more than one value for a key, e.g. `addArg('--exclude', array('val1','val2'))`
        which will create the option "--exclude 'val1' 'val2'".
     * `$escape`: If set, this overrides the `$escapeArgs` setting and enforces escaping/no escaping
  * `setStdIn()`: String or resource to supply to command via standard input.
+   This enables the same functionality as piping on the command line. It can
+   also be a resource like a file handle or a stream in which case its content
+   will be piped into the command like an input redirection.
  * `getOutput()`: The command output as string. Empty if none.
  * `getError()`: The error message, either stderr or internal message. Empty if no error.
  * `getStdErr()`: The stderr output. Empty if none.
- * `getExitCode()`: The exit code.
+ * `getExitCode()`: The exit code or `null` if command was not executed.
  * `getExecuted()`: Whether the command was successfully executed.
+ * `getIsWindows()`: Whether we are on a Windows Owe are on a Windows OS
  * `execute()`: Executes the command and returns `true` on success, `false` otherwhise.
 
 > **Note:** `getError()`, `getStdErr()` and `getOutput()` return the trimmed output.

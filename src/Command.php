@@ -276,7 +276,7 @@ class Command
     /**
      * @param string $key the argument key to add e.g. `--feature` or
      * `--name=`. If the key does not end with `=`, the (optional) $value will
-     * be separated by a space.
+     * be separated by a space. The key will get escaped if `$escapeArgs` is `true`.
      * @param string|array|null $value the optional argument value which will
      * get escaped if $escapeArgs is true.  An array can be passed to add more
      * than one value for a key, e.g.
