@@ -28,6 +28,8 @@ composer require mikehaertl/php-shellcommand
  * Catches `stdOut`, `stdErr` and `exitCode`
  * Handle argument escaping
  * Pass environment vars and other options to `proc_open()`
+ * Pipe resources like files or streams into the command
+ * Timeout for execution
 
 ## Examples
 
@@ -49,7 +51,69 @@ if ($command->execute()) {
 
 ### Advanced Features
 
+#### Add Arguments
 ```php
+<?php
+$command = new Command('/bin/somecommand');
+// Add arguments with correct escaping:
+// results in --name='d'\''Artagnan'
+$command->addArg('--name=', "d'Artagnan");
+
+// Add argument with several values
+// results in --keys key1 key2
+$command->addArg('--keys', array('key1','key2'));
+```
+
+### Pipe Input Into Command
+
+From string:
+```php
+<?php
+$command = new ('jq') // jq is a pretty printer
+$command->setStdIn('{"foo": 0}');
+if (!$command->execute()) {
+    echo $command->getError();
+} else {
+    echo $command->getOutput();
+}
+// Output:
+// {
+//   "foo": 0
+// }
+```
+
+From file:
+```php
+<?php
+$fh = fopen('test.json', 'r');
+// error checks left out...
+$command = new Command('jq');
+$command->setStdIn($fh);
+if (!$command->execute()) {
+    echo $command->getError();
+} else {
+    echo $command->getOutput();
+}
+fclose($fh);
+```
+From URL:
+```php
+<?php
+$fh = fopen('https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&hourly=temperature_2m,relativehumidity_2m,windspeed_10m', 'r');
+// error checks left out...
+$command = new Command('jq');
+$command->setStdIn($fh);
+if (!$command->execute()) {
+    echo $command->getError();
+} else {
+    echo $command->getOutput();
+}
+fclose($fh);
+```
+
+#### Set Command Instance Options
+```php
+<?php
 // Create command with options array
 $command = new Command(array(
     'command' => '/usr/local/bin/mycommand',
@@ -64,17 +128,6 @@ $command = new Command(array(
         'bypass_shell' => true,
     ),
 ));
-
-// Add arguments with correct escaping:
-// results in --name='d'\''Artagnan'
-$command->addArg('--name=', "d'Artagnan");
-
-// Add argument with several values
-// results in --keys key1 key2
-$command->addArg('--keys', array('key1','key2'));
-
-// Add string to pipe to command on standard input
-$command->setStdIn('string');
 ```
 
 ## API
