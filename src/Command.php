@@ -6,6 +6,21 @@ namespace mikehaertl\shellcommand;
  *
  * This class represents a shell command.
  *
+ * Its meant for exuting a single command and capturing stdout and stderr.
+ *
+ * Example:
+ *
+ * ```
+ * $command = new Command('/usr/local/bin/mycommand -a -b');
+ * $command->addArg('--name=', "d'Artagnan");
+ * if ($command->execute()) {
+ *     echo $command->getOutput();
+ * } else {
+ *     echo $command->getError();
+ *     $exitCode = $command->getExitCode();
+ * }
+ * ```
+ *
  * @author Michael Härtl <haertl.mike@gmail.com>
  * @license http://www.opensource.org/licenses/MIT
  */
@@ -136,11 +151,11 @@ class Command
     }
 
     /**
-     * @param array $options array of name => value options that should be
-     * applied to the object You can also pass options that use a setter, e.g.
-     * you can pass a `fileName` option which will be passed to
-     * `setFileName()`.
-     * @throws \Exception
+     * @param array $options array of name => value options (i.e. public
+     * properties) that should be applied to this object. You can also pass
+     * options that use a setter, e.g. you can pass a `fileName` option which
+     * will be passed to `setFileName()`.
+     * @throws \Exception on unknown option keys
      * @return static for method chaining
      */
     public function setOptions($options)
@@ -163,8 +178,8 @@ class Command
     /**
      * @param string $command the command or full command string to execute,
      * like 'gzip' or 'gzip -d'.  You can still call addArg() to add more
-     * arguments to the command. If $escapeCommand was set to true, the command
-     * gets escaped with escapeshellcmd().
+     * arguments to the command. If `$escapeCommand` was set to true, the command
+     * gets escaped with `escapeshellcmd()`.
      * @return static for method chaining
      */
     public function setCommand($command)
@@ -175,11 +190,11 @@ class Command
         if ($this->getIsWindows()) {
             // Make sure to switch to correct drive like "E:" first if we have
             // a full path in command
-            if (isset($command[1]) && $command[1]===':') {
+            if (isset($command[1]) && $command[1] === ':') {
                 $position = 1;
                 // Could be a quoted absolute path because of spaces.
                 // i.e. "C:\Program Files (x86)\file.exe"
-            } elseif (isset($command[2]) && $command[2]===':') {
+            } elseif (isset($command[2]) && $command[2] === ':') {
                 $position = 2;
             } else {
                 $position = false;
@@ -212,7 +227,7 @@ class Command
     }
 
     /**
-     * @return string|null the command that was set through setCommand() or
+     * @return string|null the command that was set through `setCommand()` or
      * passed to the constructor. `null` if none.
      */
     public function getCommand()
@@ -222,7 +237,7 @@ class Command
 
     /**
      * @return string|bool the full command string to execute. If no command
-     * was set with setCommand() or passed to the constructor it will return
+     * was set with `setCommand()` or passed to the constructor it will return
      * `false`.
      */
     public function getExecCommand()
@@ -238,8 +253,9 @@ class Command
     }
 
     /**
-     * @param string $args the command arguments as string. Note that these
-     * will not get escaped!
+     * @param string $args the command arguments as string like `'--arg1=value1
+     * --arg2=value2'`. Note that this string will not get escaped. This will
+     * overwrite the args added with `addArgs()`.
      * @return static for method chaining
      */
     public function setArgs($args)
@@ -249,8 +265,8 @@ class Command
     }
 
     /**
-     * @return string the command args that where set with setArgs() or added
-     * with addArg() separated by spaces
+     * @return string the command args that where set with `setArgs()` or added
+     * with `addArg()` separated by spaces.
      */
     public function getArgs()
     {
@@ -259,16 +275,16 @@ class Command
 
     /**
      * @param string $key the argument key to add e.g. `--feature` or
-     * `--name=`. If the key does not end with and `=`, the $value will be
-     * separated by a space, if any. Keys are not escaped unless $value is null
-     * and $escape is `true`.
+     * `--name=`. If the key does not end with `=`, the (optional) $value will
+     * be separated by a space.
      * @param string|array|null $value the optional argument value which will
      * get escaped if $escapeArgs is true.  An array can be passed to add more
-     * than one value for a key, e.g. `addArg('--exclude',
-     * array('val1','val2'))` which will create the option `'--exclude' 'val1'
-     * 'val2'`.
-     * @param bool|null $escape if set, this overrides the $escapeArgs setting
-     * and enforces escaping/no escaping
+     * than one value for a key, e.g.
+     * `addArg('--exclude', array('val1','val2'))`
+     * which will create the option
+     * `'--exclude' 'val1' 'val2'`.
+     * @param bool|null $escape if set, this overrides the `$escapeArgs` setting
+     * and enforces escaping/no escaping of keys and values
      * @return static for method chaining
      */
     public function addArg($key, $value = null, $escape = null)
@@ -358,7 +374,7 @@ class Command
      * Execute the command
      *
      * @return bool whether execution was successful. If `false`, error details
-     * can be obtained from getError(), getStdErr() and getExitCode().
+     * can be obtained from `getError()`, `getStdErr()` and `getExitCode()`.
      */
     public function execute()
     {
