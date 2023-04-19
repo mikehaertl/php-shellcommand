@@ -1,5 +1,5 @@
 php-shellcommand
-===========
+================
 
 [![GitHub Tests](https://github.com/mikehaertl/php-shellcommand/workflows/Tests/badge.svg)](https://github.com/mikehaertl/php-shellcommand/actions)
 [![Packagist Version](https://img.shields.io/packagist/v/mikehaertl/php-shellcommand?label=version)](https://packagist.org/packages/mikehaertl/php-shellcommand)
@@ -61,7 +61,7 @@ $command->addArg('--name=', "d'Artagnan");
 
 // Add argument with several values
 // results in --keys key1 key2
-$command->addArg('--keys', array('key1','key2'));
+$command->addArg('--keys', ['key1','key2']);
 ```
 
 ### Pipe Input Into Command
@@ -69,7 +69,7 @@ $command->addArg('--keys', array('key1','key2'));
 From string:
 ```php
 <?php
-$command = new ('jq') // jq is a pretty printer
+$command = new ('jq'); // jq is a pretty printer
 $command->setStdIn('{"foo": 0}');
 if (!$command->execute()) {
     echo $command->getError();
@@ -115,19 +115,19 @@ fclose($fh);
 ```php
 <?php
 // Create command with options array
-$command = new Command(array(
+$command = new Command([
     'command' => '/usr/local/bin/mycommand',
 
     // Will be passed as environment variables to the command
-    'procEnv' => array(
+    'procEnv' => [
         'DEMOVAR' => 'demovalue'
-    ),
+    ],
 
     // Will be passed as options to proc_open()
-    'procOptions' => array(
+    'procOptions' => [
         'bypass_shell' => true,
-    ),
-));
+    ],
+]);
 ```
 
 ## API
@@ -185,7 +185,7 @@ pass `command`, `execCommand` and `args` as options. This will call the respecti
        and `=`, the (optional) `$value` will be separated by a space. The key will get
        escaped if `$escapeArgs` is `true`.
     * `$value`: The optional argument value which will get escaped if `$escapeArgs` is `true`.
-       An array can be passed to add more than one value for a key, e.g. `addArg('--exclude', array('val1','val2'))`
+       An array can be passed to add more than one value for a key, e.g. `addArg('--exclude', ['val1','val2'])`
        which will create the option "--exclude 'val1' 'val2'".
     * `$escape`: If set, this overrides the `$escapeArgs` setting and enforces escaping/no escaping
  * `setStdIn()`: String or resource to supply to command via standard input.
