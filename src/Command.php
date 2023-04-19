@@ -328,30 +328,36 @@ class Command
 
     /**
      * @param bool $trim whether to `trim()` the return value. The default is `true`.
+     * @param string $characters the list of characters to trim. The default
+     * is ` \t\n\r\0\v\f`.
      * @return string the command output (stdout). Empty if none.
      */
-    public function getOutput($trim = true)
+    public function getOutput($trim = true, $characters = " \t\n\r\0\v\f")
     {
-        return $trim ? trim($this->_stdOut) : $this->_stdOut;
+        return $trim ? trim($this->_stdOut, $characters) : $this->_stdOut;
     }
 
     /**
      * @param bool $trim whether to `trim()` the return value. The default is `true`.
+     * @param string $characters the list of characters to trim. The default
+     * is ` \t\n\r\0\v\f`.
      * @return string the error message, either stderr or an internal message.
      * Empty string if none.
      */
-    public function getError($trim = true)
+    public function getError($trim = true, $characters = " \t\n\r\0\v\f")
     {
-        return $trim ? trim($this->_error) : $this->_error;
+        return $trim ? trim($this->_error, $characters) : $this->_error;
     }
 
     /**
      * @param bool $trim whether to `trim()` the return value. The default is `true`.
+     * @param string $characters the list of characters to trim. The default
+     * is ` \t\n\r\0\v\f`.
      * @return string the stderr output. Empty if none.
      */
-    public function getStdErr($trim = true)
+    public function getStdErr($trim = true, $characters = " \t\n\r\0\v\f")
     {
-        return $trim ? trim($this->_stdErr) : $this->_stdErr;
+        return $trim ? trim($this->_stdErr, $characters) : $this->_stdErr;
     }
 
     /**
