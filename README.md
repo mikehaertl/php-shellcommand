@@ -187,6 +187,9 @@ pass `command`, `execCommand` and `args` as options. This will call the respecti
     * `$value`: The optional argument value which will get escaped if `$escapeArgs` is `true`.
        An array can be passed to add more than one value for a key, e.g. `addArg('--exclude', ['val1','val2'])`
        which will create the option "--exclude 'val1' 'val2'".
+       Value inside that array can be array itself too. In that case it should have structure like this:
+        //structure of $v = [argument, value, separator, escape]. For example ['to_page', 2, ' ', false].
+       Then the construction of command line argument will use its privately defined flow. 
     * `$escape`: If set, this overrides the `$escapeArgs` setting and enforces escaping/no escaping
  * `setStdIn()`: String or resource to supply to command via standard input.
    This enables the same functionality as piping on the command line. It can

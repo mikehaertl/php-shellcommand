@@ -311,7 +311,17 @@ class Command
             if (is_array($value)) {
                 $params = array();
                 foreach ($value as $v) {
-                    $params[] = $doEscape ? escapeshellarg($v) : $v;
+                    //when operation argument is an array, then use its private escape flag for it
+                    if (is_array($v)) {
+                        //structure of $v = [argument, value, separator, escape]
+                        if ($v[3] !== null) {
+                            $params[] = $v[3] ? escapeshellarg($v[0].$v[2].$v[1]) : $v[0].$v[2].$v[1];
+                        } else {
+                            $params[] = $doEscape ? escapeshellarg($v[0].$v[2].$v[1]) : $v[0].$v[2].$v[1];
+                        }
+                    } else {
+                        $params[] = $doEscape ? escapeshellarg($v) : $v;
+                    }
                 }
                 $this->_args[] = $argKey . $separator . implode(' ', $params);
             } else {
